@@ -1,0 +1,58 @@
+.todo-creator {
+  background-color: white;
+  z-index: 10;
+  position: absolute;
+  width: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.todo-creator__form {
+  padding: 15px;
+}
+
+.todo-creator__title {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--implicit-border-color);
+  padding: 15px 0;
+  margin: 0;
+}
+
+.todo-creator__new-todo-name,
+.todo-creator__categories-list {
+  display: block;
+  margin: 10px 0;
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  background-color: white;
+  padding-inline-start: 5px;
+
+  &.ng-touched.ng-invalid {
+    border-color: red;
+  }
+}
+
+.todo-creator__buttons {
+  display: flex;
+
+  * {
+    height: 40px;
+    flex: 1 1;
+    border-width: 0;
+  }
+
+  :first-child {
+    background-color: var(--border-color);
+    margin-right: 5px;
+  }
+
+  :nth-child(2) {
+    background-color: var(--main-color);
+    margin-left: 5px;
+  }
+}

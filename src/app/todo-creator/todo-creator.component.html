@@ -1,0 +1,41 @@
+<div class="todo-creator" [hidden]="shouldFormBeVisible">
+  <p class="todo-creator__title">НОВАЯ ЗАДАЧА</p>
+
+  <form
+    class="todo-creator__form"
+    [formGroup]="todoCreateForm"
+    (submit)="onSubmit()"
+    (reset)="onReset()"
+  >
+
+    <input
+      formControlName="text"
+      class="todo-creator__new-todo-name"
+      type="text"
+      placeholder="Название задачи..."
+    >
+
+    <select
+      class="todo-creator__categories-list"
+      formControlName="categoryId"
+    >
+      <option value="0" disabled selected>Категория</option>
+      <option
+        *ngFor="let project of projects"
+        class="todo-creator__category"
+        [value]="project.id"
+      >
+        {{ project.title }}
+      </option>
+    </select>
+  
+    <div class="todo-creator__buttons">
+      <button type="reset">ОТМЕНА</button>
+      <button type="submit">ОК</button>  
+    </div>
+  
+  </form>
+
+  <div class="todo-creator__wrapper">
+  </div>
+</div>
