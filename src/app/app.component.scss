@@ -1,0 +1,43 @@
+.toolbar {
+  background-color: var(--main-color);
+  height: 80px;
+  position: relative;
+}
+
+.toolbar__header {
+  text-align: center;
+  color: white;
+  font-weight: normal;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+
+.toolbar__add-task {
+  color: white;
+  font-size: 40px;
+  position: absolute;
+  top: 50%;
+  right: 2%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.projects-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.todo-list__wrapper {
+  background-color: black;
+  position: fixed;
+  opacity: 0.6;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
