@@ -1,1 +1,14 @@
-<p>project works!</p>
+<div class="project">
+  <p class="project__title">{{ project.title }}</p>
+
+  <ul class="todos-list">
+    <li
+      *ngFor="let todo of project.todos"
+      class="todos-list__item"
+    >
+      <input class="todos-list__item-checkbox" type="checkbox">
+
+      <p class="todos-list__item-title">{{ todo.text }}<p>
+    </li>
+  </ul>
+</div>
