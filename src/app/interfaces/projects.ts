@@ -14,3 +14,8 @@ export interface NewTodoData {
   categoryId: string;
   text: string;
 }
+
+export interface TodoChangeCompletenessData {
+  categoryId: number;
+  todoId: number;
+}

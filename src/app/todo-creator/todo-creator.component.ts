@@ -11,10 +11,12 @@ import {
   Validators
 } from '@angular/forms';
 import { Project, NewTodoData } from '../interfaces/projects';
+import { ProjectsService } from '../projects.service';
 
 @Component({
   selector: 'app-todo-creator',
   templateUrl: './todo-creator.component.html',
+  providers: [ProjectsService],
   styleUrls: ['./todo-creator.component.scss']
 })
 export class TodoCreatorComponent implements OnInit {
@@ -26,7 +28,7 @@ export class TodoCreatorComponent implements OnInit {
   @Output() changeFormVisibilityFlag = new EventEmitter<boolean>();
   @Output() createNewTodoItem = new EventEmitter<NewTodoData>();
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private projectsService: ProjectsService) { }
 
   initForm(): void {
     this.todoCreateForm = this.fb.group({
@@ -54,6 +56,11 @@ export class TodoCreatorComponent implements OnInit {
     this.closeForm();
   }
 
+  createTodo(newTodoParams: NewTodoData) {
+    return this.projectsService.createTodo(newTodoParams)
+      .subscribe((newTodo) => newTodo);
+  }
+
   onSubmit(): void {
     const controls = this.todoCreateForm.controls;
 
@@ -62,6 +69,9 @@ export class TodoCreatorComponent implements OnInit {
 
       return;
     }
+
+    const newTodo = this.createTodo(this.todoCreateForm.value);
+    console.log(newTodo, 'newTodo');
 
     this.createNewTodoItem.emit(this.todoCreateForm.value);
     this.todoCreateForm.reset();
