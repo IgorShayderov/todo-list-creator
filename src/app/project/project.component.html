@@ -3,7 +3,7 @@
 
   <ul class="todos-list">
     <li
-      *ngFor="let todo of project.todos"
+      *ngFor="let todo of project.todos; trackBy: identify"
       class="todos-list__item"
     >
       <input

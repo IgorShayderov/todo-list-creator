@@ -8,7 +8,7 @@
 
   <section class="projects-list">
     <app-project
-      *ngFor="let project of projects"
+      *ngFor="let project of projects; trackBy: identify"
       [project]="project"
       (todoCompletenessChange)="findTodoChangeCompleteness($event)"
     >

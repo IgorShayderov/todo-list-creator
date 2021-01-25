@@ -10,7 +10,11 @@ import {
   FormBuilder,
   Validators
 } from '@angular/forms';
-import { Project, NewTodoData } from '../interfaces/projects';
+import {
+  Project,
+  Todo,
+  NewTodoData
+} from '../interfaces/projects';
 import { ProjectsService } from '../projects.service';
 
 @Component({
@@ -21,12 +25,18 @@ import { ProjectsService } from '../projects.service';
 })
 export class TodoCreatorComponent implements OnInit {
   todoCreateForm!: FormGroup;
+  newCategoryInputVisibility = false;
+
+  private newCategoryValidators = [
+    Validators.minLength(2),
+    Validators.maxLength(40)
+  ];
 
   @Input() projects: Project[] = [];
   @Input() shouldFormBeVisible = false;
 
   @Output() changeFormVisibilityFlag = new EventEmitter<boolean>();
-  @Output() createNewTodoItem = new EventEmitter<NewTodoData>();
+  @Output() createNewTodoItem = new EventEmitter<Todo>();
 
   constructor(private fb: FormBuilder, private projectsService: ProjectsService) { }
 
@@ -39,13 +49,26 @@ export class TodoCreatorComponent implements OnInit {
       ]],
       categoryId: [0, [
         Validators.required,
-        Validators.min(1),
+        Validators.min(0),
       ]],
+      newCategoryTitle: ['', this.newCategoryValidators]
     });
   }
 
   ngOnInit(): void {
     this.initForm();
+  }
+
+  onCategoryChange(categoryId: string): void {
+    this.newCategoryInputVisibility = categoryId === 'new';
+
+    if (this.newCategoryInputVisibility) {
+      this.todoCreateForm.get('newCategoryTitle')
+        ?.setValidators(this.newCategoryValidators.concat(Validators.required));
+    } else {
+      this.todoCreateForm.get('newCategoryTitle')
+        ?.setValidators(this.newCategoryValidators);
+    }
   }
 
   closeForm(): void {
@@ -56,12 +79,14 @@ export class TodoCreatorComponent implements OnInit {
     this.closeForm();
   }
 
-  createTodo(newTodoParams: NewTodoData) {
-    return this.projectsService.createTodo(newTodoParams)
-      .subscribe((newTodo) => newTodo);
+  createTodo(newTodoParams: NewTodoData): Promise<Todo> {
+    return new Promise((resolve) => {
+      this.projectsService.createTodo(newTodoParams)
+      .subscribe((newTodo) => resolve(newTodo));
+    });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     const controls = this.todoCreateForm.controls;
 
     if (this.todoCreateForm.invalid) {
@@ -70,10 +95,9 @@ export class TodoCreatorComponent implements OnInit {
       return;
     }
 
-    const newTodo = this.createTodo(this.todoCreateForm.value);
-    console.log(newTodo, 'newTodo');
+    const newTodo = await this.createTodo(this.todoCreateForm.value);
 
-    this.createNewTodoItem.emit(this.todoCreateForm.value);
+    this.createNewTodoItem.emit(newTodo);
     this.todoCreateForm.reset();
     this.closeForm();
   }

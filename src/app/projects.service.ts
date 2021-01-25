@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { environment } from '../environments/environment.prod';
 
 import {
   Project,
@@ -13,24 +14,24 @@ import {
 
 @Injectable()
 export class ProjectsService {
+  backendUrl = environment.backendUrl;
 
-  rootUrl = 'https://peaceful-plains-17890.herokuapp.com';
-  // rootUrl = 'http://localhost:3000';
-
-  constructor(
-    private http: HttpClient) {}
-
+  constructor(private http: HttpClient) {
+  }
 
   getProjectsData(): Observable<Project[]> {
-    return this.http.get<Project[]>(`${this.rootUrl}/projects`);
+    return this.http.get<Project[]>(`${this.backendUrl}/projects`);
   }
 
   createTodo(newTodoParams: NewTodoData): Observable<Todo> {
-    return this.http.post<Todo>(`${this.rootUrl}/todos`, {
+    const { text, categoryId, newCategoryTitle } = newTodoParams;
+
+    return this.http.post<Todo>(`${this.backendUrl}/todos`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      project_id: newTodoParams.categoryId,
+      project_id: categoryId,
+      new_project_title: newCategoryTitle,
       todo: {
-        text: newTodoParams.text,
+        text,
       }
     });
   }
@@ -38,6 +39,6 @@ export class ProjectsService {
   updateTodo(todoChangeCompletenessData: TodoChangeCompletenessData): Observable<{}> {
     const { categoryId, todoId } = todoChangeCompletenessData;
 
-    return this.http.patch(`${this.rootUrl}/projects/${categoryId}/todos/${todoId}`, {});
+    return this.http.patch(`${this.backendUrl}/projects/${categoryId}/todos/${todoId}`, {});
   }
 }

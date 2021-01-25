@@ -5,7 +5,11 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import { Project, TodoChangeCompletenessData } from '../interfaces/projects';
+import {
+  Project,
+  Todo,
+  TodoChangeCompletenessData
+} from '../interfaces/projects';
 import { ProjectsService } from '../projects.service';
 
 @Component({
@@ -25,18 +29,24 @@ export class ProjectComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  updateTodo(todoChangeCompletenessData: TodoChangeCompletenessData): void {
-      this.projectsService.updateTodo(todoChangeCompletenessData)
-        .subscribe();
+  identify(index: number, item: Todo): number {
+    return item.id;
   }
 
-  changeTodoCompleteness(todoId: number): void {
+  updateTodo(todoChangeCompletenessData: TodoChangeCompletenessData): Promise<void> {
+    return new Promise((resolve) => {
+      this.projectsService.updateTodo(todoChangeCompletenessData)
+      .subscribe(() => resolve());
+    });
+  }
+
+  async changeTodoCompleteness(todoId: number): Promise<void> {
     const todoChangeCompletenessData = {
       categoryId: this.project.id,
       todoId
     };
-    this.updateTodo(todoChangeCompletenessData);
 
+    await this.updateTodo(todoChangeCompletenessData);
     this.todoCompletenessChange.emit(todoChangeCompletenessData);
   }
 

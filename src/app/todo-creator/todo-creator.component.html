@@ -18,6 +18,7 @@
     <select
       class="todo-creator__categories-list"
       formControlName="categoryId"
+      (ngModelChange)="onCategoryChange($event)"
     >
       <option value="0" disabled selected>Категория</option>
       <option
@@ -27,7 +28,16 @@
       >
         {{ project.title }}
       </option>
+      <option value="new">Новая категория</option>
     </select>
+
+    <input
+      *ngIf="newCategoryInputVisibility"
+      formControlName="newCategoryTitle"
+      class="todo-creator__new-category-name"
+      type="text"
+      placeholder="Название категории..."
+    >
   
     <div class="todo-creator__buttons">
       <button type="reset">ОТМЕНА</button>
