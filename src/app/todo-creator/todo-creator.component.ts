@@ -26,6 +26,7 @@ import { ProjectsService } from '../projects.service';
 export class TodoCreatorComponent implements OnInit {
   todoCreateForm!: FormGroup;
   newCategoryInputVisibility = false;
+  isSubmitted = false;
 
   private newCategoryValidators = [
     Validators.minLength(2),
@@ -87,18 +88,22 @@ export class TodoCreatorComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    const controls = this.todoCreateForm.controls;
+    if (!this.isSubmitted) {
+      this.isSubmitted = true;
+      const controls = this.todoCreateForm.controls;
 
-    if (this.todoCreateForm.invalid) {
-      Object.keys(controls).forEach((controlName) => controls[controlName].markAsTouched());
+      if (this.todoCreateForm.invalid) {
+        Object.keys(controls).forEach((controlName) => controls[controlName].markAsTouched());
 
-      return;
+        return;
+      }
+
+      const newTodo = await this.createTodo(this.todoCreateForm.value);
+
+      this.createNewTodoItem.emit(newTodo);
+      this.todoCreateForm.reset();
+      this.closeForm();
+      this.isSubmitted = false;
     }
-
-    const newTodo = await this.createTodo(this.todoCreateForm.value);
-
-    this.createNewTodoItem.emit(newTodo);
-    this.todoCreateForm.reset();
-    this.closeForm();
   }
 }
