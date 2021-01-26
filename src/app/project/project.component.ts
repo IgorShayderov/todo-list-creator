@@ -2,15 +2,12 @@ import {
   Component,
   OnInit,
   Input,
-  Output,
-  EventEmitter
 } from '@angular/core';
-import {
-  Project,
-  Todo,
-  TodoChangeCompletenessData
-} from '../interfaces/projects';
+import { TodoChangeCompletenessData } from '../interfaces/projects';
 import { ProjectsService } from '../projects.service';
+
+import { Project } from '../models/project.class';
+import { Todo } from '../models/todo.class';
 
 @Component({
   selector: 'app-project',
@@ -21,8 +18,6 @@ import { ProjectsService } from '../projects.service';
 export class ProjectComponent implements OnInit {
   @Input()
   project!: Project;
-
-  @Output() todoCompletenessChange = new EventEmitter<TodoChangeCompletenessData>();
 
   constructor(private projectsService: ProjectsService) { }
 
@@ -40,14 +35,16 @@ export class ProjectComponent implements OnInit {
     });
   }
 
-  async changeTodoCompleteness(todoId: number): Promise<void> {
+  async changeTodoCompleteness(event: Event, todo: Todo): Promise<void> {
+    event.preventDefault();
+
     const todoChangeCompletenessData = {
       categoryId: this.project.id,
-      todoId
+      todoId: todo.id,
     };
 
     await this.updateTodo(todoChangeCompletenessData);
-    this.todoCompletenessChange.emit(todoChangeCompletenessData);
+    todo.changeCompleteness();
   }
 
 }

@@ -10,7 +10,7 @@
         class="todos-list__item-checkbox"
         type="checkbox"
         [checked]="todo.is_completed"
-        (click)="changeTodoCompleteness(todo.id)"
+        (click)="changeTodoCompleteness($event, todo)"
       >
 
       <p class="todos-list__item-title">{{ todo.text }}<p>

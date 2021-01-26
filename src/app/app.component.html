@@ -10,7 +10,6 @@
     <app-project
       *ngFor="let project of projects; trackBy: identify"
       [project]="project"
-      (todoCompletenessChange)="findTodoChangeCompleteness($event)"
     >
     </app-project>
   </section>
@@ -19,7 +18,6 @@
     [projects]="projects"
     [shouldFormBeVisible]="!shouldFormBeVisible"
     (changeFormVisibilityFlag)="closeForm()"
-    (createNewTodoItem)="addNewTodoItem($event)"
   >
   </app-todo-creator>
 

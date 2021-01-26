@@ -1,15 +1,6 @@
-export interface Project {
-  id: number;
-  title: string;
-  todos?: Todo[];
-}
+import { Project } from '../models/project.class';
+import { Todo } from '../models/todo.class';
 
-export interface Todo {
-  id: number;
-  text: string;
-  is_completed: boolean;
-  project?: Project;
-}
 export interface NewTodoData {
   categoryId: string;
   text: string;
@@ -19,4 +10,9 @@ export interface NewTodoData {
 export interface TodoChangeCompletenessData {
   categoryId: number;
   todoId: number;
+}
+
+export interface CreatedTodoData {
+  todo: Todo;
+  project: Project;
 }

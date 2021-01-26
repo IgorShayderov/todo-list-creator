@@ -5,11 +5,13 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { environment } from '../environments/environment.prod';
 
+import { Project } from './models/project.class';
+import { Todo } from './models/todo.class';
+
 import {
-  Project,
-  Todo,
   TodoChangeCompletenessData,
-  NewTodoData
+  NewTodoData,
+  CreatedTodoData
 } from './interfaces/projects';
 
 @Injectable()
@@ -23,10 +25,10 @@ export class ProjectsService {
     return this.http.get<Project[]>(`${this.backendUrl}/projects`);
   }
 
-  createTodo(newTodoParams: NewTodoData): Observable<Todo> {
+  createTodo(newTodoParams: NewTodoData): Observable<CreatedTodoData> {
     const { text, categoryId, newCategoryTitle } = newTodoParams;
 
-    return this.http.post<Todo>(`${this.backendUrl}/todos`, {
+    return this.http.post<CreatedTodoData>(`${this.backendUrl}/todos`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       project_id: categoryId,
       new_project_title: newCategoryTitle,

@@ -3,19 +3,20 @@ import {
   OnInit,
   Input,
   Output,
-  EventEmitter
+  EventEmitter,
+  ViewChild
 } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
   Validators
 } from '@angular/forms';
-import {
-  Project,
-  Todo,
-  NewTodoData
-} from '../interfaces/projects';
+
+import { NewTodoData, CreatedTodoData  } from '../interfaces/projects';
 import { ProjectsService } from '../projects.service';
+import { plainToClass } from 'class-transformer';
+import { Project } from '../models/project.class';
+import { Todo } from '../models/todo.class';
 
 @Component({
   selector: 'app-todo-creator',
@@ -37,7 +38,9 @@ export class TodoCreatorComponent implements OnInit {
   @Input() shouldFormBeVisible = false;
 
   @Output() changeFormVisibilityFlag = new EventEmitter<boolean>();
-  @Output() createNewTodoItem = new EventEmitter<Todo>();
+
+  @ViewChild('categorySelect')
+  categorySelect!: HTMLInputElement;
 
   constructor(private fb: FormBuilder, private projectsService: ProjectsService) { }
 
@@ -50,7 +53,7 @@ export class TodoCreatorComponent implements OnInit {
       ]],
       categoryId: [0, [
         Validators.required,
-        Validators.min(0),
+        Validators.min(1),
       ]],
       newCategoryTitle: ['', this.newCategoryValidators]
     });
@@ -80,10 +83,10 @@ export class TodoCreatorComponent implements OnInit {
     this.closeForm();
   }
 
-  createTodo(newTodoParams: NewTodoData): Promise<Todo> {
+  createTodo(newTodoParams: NewTodoData): Promise<CreatedTodoData> {
     return new Promise((resolve) => {
       this.projectsService.createTodo(newTodoParams)
-      .subscribe((newTodo) => resolve(newTodo));
+      .subscribe((createdTodoData) => resolve(createdTodoData));
     });
   }
 
@@ -98,12 +101,27 @@ export class TodoCreatorComponent implements OnInit {
         return;
       }
 
-      const newTodo = await this.createTodo(this.todoCreateForm.value);
+      const createdTodoData = await this.createTodo(this.todoCreateForm.value);
+      await this.createOrUpdateProject(createdTodoData);
 
-      this.createNewTodoItem.emit(newTodo);
       this.todoCreateForm.reset();
       this.closeForm();
       this.isSubmitted = false;
     }
+  }
+
+  createOrUpdateProject(createdTodoData: CreatedTodoData): Promise<void> {
+    return new Promise((resolve) => {
+      const { todo, project } = createdTodoData;
+      const soughtProject = this.projects.find((existingProject) => existingProject.id === project.id);
+
+      if (typeof soughtProject === 'undefined') {
+        this.projects.push(plainToClass(Project, project).addTodo(todo));
+      } else {
+        soughtProject.todos.push(plainToClass(Todo, todo));
+      }
+
+      resolve();
+    });
   }
 }
