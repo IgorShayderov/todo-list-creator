@@ -116,7 +116,7 @@ export class TodoCreatorComponent implements OnInit {
       const soughtProject = this.projects.find((existingProject) => existingProject.id === project.id);
 
       if (typeof soughtProject === 'undefined') {
-        this.projects.push(plainToClass(Project, project).addTodo(todo));
+        this.projects.push(plainToClass(Project, project).addTodo(plainToClass(Todo, todo)));
       } else {
         soughtProject.todos.push(plainToClass(Todo, todo));
       }
